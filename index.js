@@ -18,8 +18,8 @@ function handleSubmit(e) {
   items.push(item);
   console.log(`there are now  ${items.length} in your state`);
   e.target.reset();
- // Fire off custom event let know everyone items have been updated
- 
+  // Fire off custom event let know everyone items have been updated
+  list.dispatchEvent(new CustomEvent("itemsUpdated"));
 }
 
 function displayItems() {
@@ -39,4 +39,24 @@ function displayItems() {
   console.log(html);
 }
 
+function mirrorToLocalStorage() {
+  console.info("Saving Items to localStorage");
+  localStorage.setItem("items", JSON.stringify(items));
+}
+
+function restoreFromLocalStorage() {
+  console.info("Restoring from LS");
+
+  const lsItems = JSON.parse(localStorage.getItem("items"));
+  if (lsItems.length) {
+    // items = lsItems;
+    items.push(...lsItems);
+    list.dispatchEvent(new CustomEvent("itemsUpdated"));
+  }
+}
+
 shoppingForm.addEventListener("submit", handleSubmit);
+list.addEventListener("itemsUpdated", displayItems);
+list.addEventListener("itemsUpdated", mirrorToLocalStorage);
+
+restoreFromLocalStorage();

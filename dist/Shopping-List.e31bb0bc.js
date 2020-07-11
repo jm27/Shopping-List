@@ -118,6 +118,18 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"index.js":[function(require,module,exports) {
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var shoppingForm = document.querySelector(".shopping");
 var list = document.querySelector(".list"); // We will store our state in ouur array
 
@@ -137,6 +149,8 @@ function handleSubmit(e) {
   items.push(item);
   console.log("there are now  ".concat(items.length, " in your state"));
   e.target.reset(); // Fire off custom event let know everyone items have been updated
+
+  list.dispatchEvent(new CustomEvent("itemsUpdated"));
 }
 
 function displayItems() {
@@ -148,7 +162,26 @@ function displayItems() {
   console.log(html);
 }
 
+function mirrorToLocalStorage() {
+  console.info("Saving Items to localStorage");
+  localStorage.setItem("items", JSON.stringify(items));
+}
+
+function restoreFromLocalStorage() {
+  console.info("Restoring from LS");
+  var lsItems = JSON.parse(localStorage.getItem("items"));
+
+  if (lsItems.length) {
+    // items = lsItems;
+    items.push.apply(items, _toConsumableArray(lsItems));
+    list.dispatchEvent(new CustomEvent("itemsUpdated"));
+  }
+}
+
 shoppingForm.addEventListener("submit", handleSubmit);
+list.addEventListener("itemsUpdated", displayItems);
+list.addEventListener("itemsUpdated", mirrorToLocalStorage);
+restoreFromLocalStorage();
 },{}],"../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -177,7 +210,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49574" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51023" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
