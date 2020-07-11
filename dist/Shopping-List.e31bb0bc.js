@@ -123,8 +123,29 @@ var list = document.querySelector(".list"); // We will store our state in ouur a
 
 var items = [];
 
-function handleSubmit() {
+function handleSubmit(e) {
   e.preventDefault();
+  console.log("submitted");
+  var name = e.currentTarget.item.value; // If empty don't submit
+
+  if (!name) return;
+  var item = {
+    name: name,
+    id: Date.now(),
+    complete: false
+  };
+  items.push(item);
+  console.log("there are now  ".concat(items.length, " in your state"));
+  e.target.reset(); // Fire off custom event let know everyone items have been updated
+}
+
+function displayItems() {
+  console.log(items);
+  var html = items.map(function (item) {
+    return "<li class=\"shopping-item\">\n  <input type=\"checkbox\">\n  <span class=\"itemName\">\n  ".concat(item.name, "\n  </span>\n  <button aria-label\"Remove ").concat(item.name, "\">&times;</button>\n  </li>");
+  }).join("");
+  list.innerHTML = html;
+  console.log(html);
 }
 
 shoppingForm.addEventListener("submit", handleSubmit);
@@ -156,7 +177,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64300" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49574" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
