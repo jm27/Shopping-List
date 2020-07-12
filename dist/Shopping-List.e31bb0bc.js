@@ -156,7 +156,7 @@ function handleSubmit(e) {
 function displayItems() {
   console.log(items);
   var html = items.map(function (item) {
-    return "<li class=\"shopping-item\">\n  <input type=\"checkbox\">\n  <span class=\"itemName\">\n  ".concat(item.name, "\n  </span>\n  <button aria-label\"Remove ").concat(item.name, "\">&times;</button>\n  </li>");
+    return "<li class=\"shopping-item\">\n  <input type=\"checkbox\">\n  <span class=\"itemName\">\n  ".concat(item.name, "\n  </span>\n  <button aria-label\"Remove ").concat(item.name, "\"\n  value=\"").concat(item.id, "\"\n  >&times;</button>\n  </li>");
   }).join("");
   list.innerHTML = html;
   console.log(html);
@@ -172,16 +172,39 @@ function restoreFromLocalStorage() {
   var lsItems = JSON.parse(localStorage.getItem("items"));
 
   if (lsItems.length) {
+    var _items;
+
     // items = lsItems;
-    items.push.apply(items, _toConsumableArray(lsItems));
+    (_items = items).push.apply(_items, _toConsumableArray(lsItems));
+
     list.dispatchEvent(new CustomEvent("itemsUpdated"));
   }
 }
 
+function deleteItem(id) {
+  items = items.filter(function (item) {
+    return item.id !== id;
+  });
+  console.log(items);
+  console.log("Deleting Item", id);
+  list.dispatchEvent(new CustomEvent("itemsUpdated"));
+}
+
 shoppingForm.addEventListener("submit", handleSubmit);
 list.addEventListener("itemsUpdated", displayItems);
-list.addEventListener("itemsUpdated", mirrorToLocalStorage);
+list.addEventListener("itemsUpdated", mirrorToLocalStorage); // Event delegation listen for click on list <ul> but delegate click to button if clicked
+
+list.addEventListener("click", function (e) {
+  if (e.target.matches("button")) {
+    deleteItem(parseInt(e.target.value));
+  }
+});
 restoreFromLocalStorage();
+var buttons = list.querySelectorAll("button");
+console.log(buttons);
+buttons.forEach(function (button) {
+  return button.addEventListener("click", deleteItem);
+});
 },{}],"../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -210,7 +233,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51023" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52187" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
