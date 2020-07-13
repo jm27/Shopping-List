@@ -156,7 +156,7 @@ function handleSubmit(e) {
 function displayItems() {
   console.log(items);
   var html = items.map(function (item) {
-    return "<li class=\"shopping-item\">\n  <input type=\"checkbox\">\n  <span class=\"itemName\">\n  ".concat(item.name, "\n  </span>\n  <button aria-label\"Remove ").concat(item.name, "\"\n  value=\"").concat(item.id, "\"\n  >&times;</button>\n  </li>");
+    return "<li class=\"shopping-item\">\n  <input value=\"".concat(item.id, "\" \n  ").concat(item.complete ? "checked" : "", "\n  type=\"checkbox\">\n  <span class=\"itemName\">\n  ").concat(item.name, "\n  </span>\n  <button aria-label\"Remove ").concat(item.name, "\"\n  value=\"").concat(item.id, "\"\n  >&times;</button>\n  </li>");
   }).join("");
   list.innerHTML = html;
   console.log(html);
@@ -190,13 +190,29 @@ function deleteItem(id) {
   list.dispatchEvent(new CustomEvent("itemsUpdated"));
 }
 
+function markAsComplete(id) {
+  console.log("marking as complete", id);
+  var itemRef = items.find(function (item) {
+    return item.id === id;
+  });
+  item.Ref = !itemRef.complete;
+  list.dispatchEvent(new CustomEvent("itemsUpdated"));
+  console.log(itemRef);
+}
+
 shoppingForm.addEventListener("submit", handleSubmit);
 list.addEventListener("itemsUpdated", displayItems);
 list.addEventListener("itemsUpdated", mirrorToLocalStorage); // Event delegation listen for click on list <ul> but delegate click to button if clicked
 
 list.addEventListener("click", function (e) {
+  var id = parseInt(e.target.value);
+
   if (e.target.matches("button")) {
-    deleteItem(parseInt(e.target.value));
+    deleteItem(id);
+  }
+
+  if (e.target.matches('input[type="checkbox"]')) {
+    markAsComplete(id);
   }
 });
 restoreFromLocalStorage();
@@ -233,7 +249,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52187" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53979" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
